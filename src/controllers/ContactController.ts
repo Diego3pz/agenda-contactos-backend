@@ -60,7 +60,7 @@ export class ContactController {
             contact.contactAddress = req.body.contactAddress || contact.contactAddress;
 
             await contact.save();
-            res.status(200).json({ message: 'Contacto actualizado correctamente', contact });
+            res.send('Contacto actualizado correctamente');
         } catch (error) {
             console.log(error);
             res.status(500).json({ message: 'Error al actualizar el contacto' });
