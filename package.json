@@ -4,7 +4,8 @@
   "description": "Backend para proyecto de Agenda de Contactos",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec ts-node src/index.ts"
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "dev:api": "nodemon --exec ts-node src/index.ts --api"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/Diego3pz/agenda-contactos-backend#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -26,6 +28,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/morgan": "^1.9.9",
