@@ -9,7 +9,6 @@ const BREVO_API_KEY = process.env.BREVO_API_KEY;
 
 
 export const sendEmail = async (emailData: any) => {
-    console.log('BREVO_API_KEY:', BREVO_API_KEY);
     try {
         const response = await axios.post(
             BREVO_API_URL,
@@ -21,7 +20,6 @@ export const sendEmail = async (emailData: any) => {
                 },
             }
         );
-        console.log('Correo enviado:', response.data);
         return response.data;
     } catch (error) {
         console.error('Error enviando el correo:', error.response?.data || error.message);
