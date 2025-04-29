@@ -3,6 +3,8 @@ import User from '../models/User';
 import { hashPassword } from '../utils/auth';
 import Token from '../models/Token';
 import { generateToken } from '../utils/token';
+import { AuthEmail } from '../emails/AuthEmail';
+import { sendEmail } from '../config/brevoemail';
 
 
 export class AuthController {
@@ -30,11 +32,19 @@ export class AuthController {
             token.token = generateToken()
             token.user = user.id
 
+            // Enviar el email de confirmación
+            await AuthEmail.sendConfirmationEmail({
+                email: user.email,
+                name: user.name,
+                token: token.token,
+            });
+            // Guardar el usuario y el token en la base de datos
+
             await Promise.allSettled([
                 user.save(),
                 token.save()
             ])
-            
+
             res.status(201).json({ message: 'Usuario creado correctamente' })
         } catch (error) {
             res.status(500).json({ message: 'Error interno del servidor' })

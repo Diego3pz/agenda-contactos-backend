@@ -1,0 +1,28 @@
+
+import axios from 'axios';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
+const BREVO_API_KEY = process.env.BREVO_API_KEY || '4Ra8A9CtwvzqdDxM';
+
+export const sendEmail = async (emailData: any) => {
+    try {
+        const response = await axios.post(
+            BREVO_API_URL,
+            emailData,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'api-key': BREVO_API_KEY,
+                },
+            }
+        );
+        console.log('Correo enviado:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error enviando el correo:', error.response?.data || error.message);
+        throw error;
+    }
+};
