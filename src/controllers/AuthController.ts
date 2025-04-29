@@ -4,7 +4,6 @@ import { hashPassword } from '../utils/auth';
 import Token from '../models/Token';
 import { generateToken } from '../utils/token';
 import { AuthEmail } from '../emails/AuthEmail';
-import { sendEmail } from '../config/brevoemail';
 
 
 export class AuthController {

@@ -8,11 +8,12 @@ interface IEmail {
 
 export class AuthEmail {
     static sendConfirmationEmail = async (user: IEmail) => {
+        console.log('sendConfirmationEmail fue llamado con:', user);
 
-       const emailData = {
-            sender: { name: 'UpTask', email: user.email },
+        const emailData = {
+            sender: { name: 'Agenda_Contactos', email: user.email },
             to: [{ email: user.email, name: user.name }],
-            subject: 'UpTask - Confirma tu cuenta',
+            subject: 'Agenda_Contactos - Confirma tu cuenta',
             htmlContent: `
                 <html>
                     <body>
@@ -24,10 +25,7 @@ export class AuthEmail {
                     </body>
                 </html>
             `,
-            replyTo: { email: 'admin@uptask.com', name: 'UpTask Support' },
-            headers: { 'X-Custom-Header': 'custom-value' },
-            params: { token: user.token, name: user.name },
-        }
+        };
 
         await sendEmail(emailData);
     };
