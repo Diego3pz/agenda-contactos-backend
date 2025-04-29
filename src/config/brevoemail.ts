@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
-const BREVO_API_KEY = process.env.BREVO_API_KEY;
+const BREVO_API_KEY = process.env.BREVO_API_KEY || '4Ra8A9CtwvzqdDxM';
 
 export const sendEmail = async (emailData: any) => {
     try {
