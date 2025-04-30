@@ -25,7 +25,7 @@ export class AuthEmail {
                                 <p style="font-size: 16px;">Has creado tu cuenta en <b>Agenda Contactos</b>. Ya casi está todo listo, solo debes confirmar tu cuenta.</p>
                                 <p style="font-size: 16px;">Haz clic en el siguiente enlace para confirmar tu cuenta:</p>
                                 <div style="text-align: center; margin: 20px 0;">
-                                    <a href="https://example.com/auth/confirm-account" style="background-color: #4CAF50; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px;">Confirmar cuenta</a>
+                                    <a href="${process.env.FRONTEND_URL}/auth/confirm-account" style="background-color: #4CAF50; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px;">Confirmar cuenta</a>
                                 </div>
                                 <p style="font-size: 16px;">Y utiliza el siguiente código:</p>
                                 <p style="font-size: 18px; font-weight: bold; text-align: center; color: #4CAF50;">${user.token}</p>
@@ -53,7 +53,7 @@ export class AuthEmail {
                     <body>
                         <p>Hola: ${user.name}, has solicitado recuperar tu contraseña en Agenda_Contactos.</p> 
                         <p>Visita el siguiente enlace:</p>
-                        <a href="https://example.com/auth/reset-password">Recuperar contraseña</a>
+                        <a href="${process.env.FRONTEND_URL}/auth/reset-password">Recuperar contraseña</a>
                         <p>Ingresa el código: <b>${user.token}</b></p>
                         <p>Este token expira en 10 minutos.</p>
                     </body>

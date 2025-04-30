@@ -36,7 +36,7 @@ export class ContactController {
         const contact = new Contact(req.body);
         try {
             await contact.save();
-            res.status(201).json({ message: 'Contacto creado correctamente', contact });
+            res.send('Contacto creado correctamente');
         } catch (error) {
             console.log(error);
             res.status(500).json({ message: 'Error al crear el contacto' });
@@ -79,7 +79,7 @@ export class ContactController {
             }
 
             await contact.deleteOne();
-            res.status(200).json({ message: 'Contacto eliminado correctamente' });
+            res.send('Contacto eliminado correctamente');
         } catch (error) {
             console.log(error);
             res.status(500).json({ message: 'Error al eliminar el contacto' });

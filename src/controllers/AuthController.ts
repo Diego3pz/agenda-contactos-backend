@@ -44,7 +44,7 @@ export class AuthController {
                 token.save()
             ])
 
-            res.status(201).json({ message: 'Usuario creado correctamente' })
+            res.send('Usuario creado correctamente')
         } catch (error) {
             res.status(500).json({ message: 'Error interno del servidor' })
 
@@ -70,7 +70,7 @@ export class AuthController {
                 tokenExists.deleteOne()
             ])
 
-            res.status(200).json({ message: 'Usuario confirmado correctamente' })
+            res.send('Usuario confirmado correctamente')
         } catch (error) {
             res.status(500).json({ message: 'Error interno del servidor' })
         }
@@ -114,10 +114,54 @@ export class AuthController {
                 return
             }
 
-            res.status(200).json({ message: 'Usuario autenticado correctamente' })
+            res.send('Usuario autenticado correctamente')
 
         } catch (error) {
             res.status(500).json({ message: 'Error interno del servidor' })
+        }
+    }
+
+    static requestConfirmationCode = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body
+
+            // Verificar si el usuario ya existe
+            const user = await User.findOne({ email })
+            if (!user) {
+                const error = new Error('El usuario no esta registrado')
+                res.status(404).json({ error: error.message })
+                return
+            }
+
+            // Verificar si el usuario ya esta confirmado
+            if (user.confirmed) {
+                const error = new Error('El usuario ya esta confirmado')
+                res.status(403).json({ error: error.message })
+                return
+            }
+
+            // Generar token de verificación
+            const token = new Token()
+            token.token = generateToken()
+            token.user = user.id
+
+            // Enviar el email de confirmación
+            await AuthEmail.sendConfirmationEmail({
+                email: user.email,
+                name: user.name,
+                token: token.token,
+            });
+            // Guardar el usuario y el token en la base de datos
+
+            await Promise.allSettled([
+                user.save(),
+                token.save()
+            ])
+
+            res.send('Se envio un nuevo Token de confirmacion al email')
+        } catch (error) {
+            res.status(500).json({ message: 'Error interno del servidor' })
+
         }
     }
 }
