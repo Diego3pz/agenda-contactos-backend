@@ -4,9 +4,13 @@ import Contact from '../models/Contact';
 export class ContactController {
 
     // Obtener todos los contactos
-    static getAllContacts = async (req: Request, res: Response): Promise<void> => {
+    static getAllContacts = async (req: Request, res: Response) => {
         try {
-            const contacts = await Contact.find();
+            const contacts = await Contact.find({
+                $or: [
+                    { owner: { $in: req.user.id } }
+                ]
+            });
             res.status(200).json(contacts);
         } catch (error) {
             console.log(error);
@@ -15,7 +19,7 @@ export class ContactController {
     };
 
     // Obtener un contacto por ID
-    static getContactById = async (req: Request, res: Response): Promise<void> => {
+    static getContactById = async (req: Request, res: Response) => {
         const { id } = req.params;
         try {
             const contact = await Contact.findById(id);
@@ -24,6 +28,14 @@ export class ContactController {
                 res.status(404).json({ error: error.message });
                 return;
             }
+
+            // Verificar si el contacto pertenece al usuario autenticado
+            if (contact.owner.toString() !== req.user.id.toString()) {
+                const error = new Error('Accion no valida');
+                res.status(404).json({ error: error.message });
+                return;
+            }
+
             res.status(200).json(contact);
         } catch (error) {
             console.log(error);
@@ -32,8 +44,12 @@ export class ContactController {
     };
 
     // Crear un nuevo contacto
-    static createContact = async (req: Request, res: Response): Promise<void> => {
+    static createContact = async (req: Request, res: Response) => {
         const contact = new Contact(req.body);
+
+        // Asignar el propietario del contacto al usuario autenticado
+        contact.owner = req.user.id
+
         try {
             await contact.save();
             res.send('Contacto creado correctamente');
@@ -44,12 +60,19 @@ export class ContactController {
     };
 
     // Actualizar un contacto existente
-    static updateContact = async (req: Request, res: Response): Promise<void> => {
+    static updateContact = async (req: Request, res: Response) => {
         const { id } = req.params;
         try {
             const contact = await Contact.findById(id);
             if (!contact) {
                 const error = new Error('Contacto no encontrado');
+                res.status(404).json({ error: error.message });
+                return;
+            }
+
+            // Verificar si el contacto pertenece al usuario autenticado
+            if (contact.owner.toString() !== req.user.id.toString()) {
+                const error = new Error('Solo el propietario puede actualizar el contacto');
                 res.status(404).json({ error: error.message });
                 return;
             }
@@ -68,12 +91,19 @@ export class ContactController {
     };
 
     // Eliminar un contacto
-    static deleteContact = async (req: Request, res: Response): Promise<void> => {
+    static deleteContact = async (req: Request, res: Response) => {
         const { id } = req.params;
         try {
             const contact = await Contact.findById(id);
             if (!contact) {
                 const error = new Error('Contacto no encontrado');
+                res.status(404).json({ error: error.message });
+                return;
+            }
+
+            // Verificar si el contacto pertenece al usuario autenticado
+            if (contact.owner.toString() !== req.user.id.toString()) {
+                const error = new Error('Solo el propietario puede eliminar el contacto');
                 res.status(404).json({ error: error.message });
                 return;
             }

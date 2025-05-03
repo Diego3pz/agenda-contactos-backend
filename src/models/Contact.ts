@@ -1,4 +1,5 @@
-import mongoose, { Schema, model, Document } from "mongoose";
+import mongoose, { Schema, model, Document, PopulatedDoc } from "mongoose";
+import { IUser } from "./User";
 
 interface IAddress {
     street: string;
@@ -13,6 +14,7 @@ interface IContact extends Document {
     contactAddress: IAddress[];
     createdAt: Date;
     updatedAt: Date;
+    owner: PopulatedDoc<IUser & Document>
 }
 
 const AddressSchema = new Schema<IAddress>({
@@ -53,6 +55,11 @@ const ContactSchema = new Schema<IContact>(
         contactAddress: {
             type: [AddressSchema],
             required: false,
+        },
+        owner: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
         },
     },
     {

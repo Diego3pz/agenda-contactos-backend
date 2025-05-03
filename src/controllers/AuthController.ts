@@ -4,11 +4,13 @@ import { checkPassword, hashPassword } from '../utils/auth';
 import Token from '../models/Token';
 import { generateToken } from '../utils/token';
 import { AuthEmail } from '../emails/AuthEmail';
+import { generateJWT } from '../utils/jwt';
 
 
 export class AuthController {
 
-    static createAccount = async (req: Request, res: Response) => {
+
+    static createAccount = async (req: Request, res: Response): Promise<void> => {
         try {
             const { password, email } = req.body
 
@@ -114,7 +116,8 @@ export class AuthController {
                 return
             }
 
-            res.send('Usuario autenticado correctamente')
+            const token = generateJWT({ id: user.id })
+            res.send(token)
 
         } catch (error) {
             res.status(500).json({ message: 'Error interno del servidor' })
@@ -219,7 +222,7 @@ export class AuthController {
     static updatePasswordWithToken = async (req: Request, res: Response) => {
         try {
             const { token } = req.params
-            const {password} =req.body
+            const { password } = req.body
 
             const tokenExists = await Token.findOne({ token })
 
@@ -228,7 +231,7 @@ export class AuthController {
                 res.status(401).json({ error: error.message })
                 return
             }
-            
+
             // Verificar si el usuario ya existe
             const user = await User.findById(tokenExists.user)
             user.password = await hashPassword(password)
@@ -245,5 +248,10 @@ export class AuthController {
         } catch (error) {
             res.status(500).json({ message: 'Error interno del servidor' })
         }
+    }
+
+    static user = async (req: Request, res: Response): Promise<void> => {
+         res.json(req.user)
+         return
     }
 }

@@ -2,14 +2,17 @@ import { Router } from 'express';
 import { body } from 'express-validator';
 import { ContactController } from '../controllers/ContactController';
 import { handleInputErrors } from '../middleware/validation';
+import { autenticate } from '../middleware/auth';
 
 const router = Router();
+
+router.use(autenticate);
 
 // Obtener todos los contactos
 router.get('/', ContactController.getAllContacts);
 
 // Obtener un contacto por ID
-router.get('/:id', ContactController.getContactById);
+router.get('/:id',ContactController.getContactById);
 
 // Crear un nuevo contacto
 router.post(
